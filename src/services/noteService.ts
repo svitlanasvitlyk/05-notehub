@@ -1,42 +1,55 @@
-import axios from "axios";
-import type { Note, NoteTag } from "../types/note";
+import axios from 'axios';
+import type { Note, NotePost, NoteId } from '../types/note';
 
-const token = import.meta.env.VITE_NOTEHUB_TOKEN;
-
-const axiosInstance = axios.create({
-  baseURL: "https://notehub-public.goit.study/api",
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  },
-});
-
-interface NoteHttpRequest {
+interface NotesHttpResponse {
   notes: Note[];
   totalPages: number;
 }
 
-interface NewNoteContent {
-  title: string;
-  content: string;
-  tag: NoteTag;
-}
-
 export const fetchNotes = async (
-  page = 1,
-  search = "",
-  perPage = 16
-): Promise<NoteHttpRequest> => {
-  const res = await axiosInstance.get("/notes", { params: { page, search, perPage } });
-  return res.data;
+  query: string,
+  page: number
+): Promise<NotesHttpResponse> => {
+  const response = await axios.get<NotesHttpResponse>(
+    'https://notehub-public.goit.study/api/notes',
+    {
+      params: {
+        search: query,
+        page: page,
+        perPage: 12,
+      },
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
+      },
+    }
+  );
+
+  return response.data;
 };
 
-export const createNote = async (newNote: NewNoteContent): Promise<Note> => {
-  const res = await axiosInstance.post("/notes", newNote);
-  return res.data;
+export const createNote = async (note: NotePost): Promise<Note> => {
+  const response = await axios.post<Note>(
+    'https://notehub-public.goit.study/api/notes',
+    note,
+    {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
+      },
+    }
+  );
+
+  return response.data;
 };
 
-export const deleteNote = async (id: string): Promise<Note> => {
-  const res = await axiosInstance.delete(`/notes/${id}`);
-  return res.data;
+export const deleteNote = async (id: NoteId): Promise<Note> => {
+  const response = await axios.delete<Note>(
+    `https://notehub-public.goit.study/api/notes/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`,
+      },
+    }
+  );
+
+  return response.data;
 };

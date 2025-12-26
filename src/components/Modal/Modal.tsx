@@ -1,15 +1,15 @@
 import { createPortal } from 'react-dom';
-import css from './Modal.module.css';
 import { useEffect } from 'react';
+import css from './Modal.module.css';
 
-export interface NoteModalProps {
-  onClose: () => void;
+interface ModalProps {
   children: React.ReactNode;
+  onClose: () => void;
 }
 
-const Modal = ({ onClose, children }: NoteModalProps) => {
-  const handleBackdropClick = (ev: React.MouseEvent<HTMLDivElement>) => {
-    if (ev.target === ev.currentTarget) {
+export default function Modal({ children, onClose }: ModalProps) {
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
       onClose();
     }
   };
@@ -41,6 +41,4 @@ const Modal = ({ onClose, children }: NoteModalProps) => {
     </div>,
     document.body
   );
-};
-
-export default Modal;
+}
