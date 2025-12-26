@@ -1,6 +1,5 @@
 # Env vars
 .env
-*.local
 
 # Logs
 logs
